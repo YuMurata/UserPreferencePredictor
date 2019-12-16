@@ -6,5 +6,13 @@ setup(
     description="ユーザーの好みを推測",
     author='yu murata',
     keywords='farewell',
-    install_requires=["tensorflow", 'numpy', 'pillow'],
+    install_requires=["tensorflow", 'numpy',
+                      'pillow', 'opencv-python', 'deap'],
+    packages=['UserPreferencePredictor',
+              'UserPreferencePredictor.config',
+              'UserPreferencePredictor.Model',
+              'UserPreferencePredictor.PreferenceOptimizer',
+              'UserPreferencePredictor.TrainDataMaker',
+
+              ],
 )
