@@ -21,6 +21,10 @@ class CompeteException(TournamentException):
     pass
 
 
+class CompleteException(TournamentException):
+    pass
+
+
 class GameWin(Enum):
     LEFT = auto()
     RIGHT = auto()
@@ -67,7 +71,7 @@ class Tournament:
 
     def _new_round(self):
         if len(self.current_player_index_list) >= 2:
-            raise RoundException
+            raise RoundException('invalid round')
 
         for index in self.current_player_index_list:
             self.player_list[index].score_up()
@@ -77,6 +81,9 @@ class Tournament:
             sample(self.next_player_index_list,
                    len(self.next_player_index_list))
         self.next_player_index_list.clear()
+
+        current_player_num = len(self.current_player_index_list)
+        self.is_complete = current_player_num == self.old_player_num
 
         self.old_player_num = len(self.current_player_index_list)
 
@@ -90,7 +97,7 @@ class Tournament:
             raise MatchException('match is already ready')
 
         if self.is_complete:
-            raise MatchException('game is already over')
+            raise CompleteException('game is already over')
 
         self.logger.info(f'--- new match start ---')
 
@@ -122,7 +129,7 @@ class Tournament:
             raise CompeteException('match is not ready yet')
 
         if self.is_complete:
-            raise CompeteException('game is already over')
+            raise CompleteException('game is already over')
 
         def _win(winner_index: int):
             self.player_list[winner_index].score_up()
@@ -142,17 +149,11 @@ class Tournament:
         is_no_current_player = len(self.current_player_index_list) == 0
         is_only_one_winner = len(self.next_player_index_list) == 1
         is_championship = is_no_current_player and is_only_one_winner
+        is_no_player = is_no_current_player and len(
+            self.next_player_index_list) == 0
 
-        remaining_player_num = len(
-            self.next_player_index_list)+len(self.current_player_index_list)
-        is_player_no_change = remaining_player_num == self.old_player_num
-
-        if is_championship or is_player_no_change:
+        if is_championship or is_no_player:
             self.is_complete = True
-
-            if is_player_no_change:
-                for index in self.current_player_index_list:
-                    self.player_list[index].score_up()
 
     @property
     def get_match_num(self):
