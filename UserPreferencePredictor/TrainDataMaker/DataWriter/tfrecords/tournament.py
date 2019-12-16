@@ -1,8 +1,6 @@
 import tensorflow as tf
 import numpy as np
-from tqdm import tqdm
-
-from .data_writer import DataWriter, DataWriterException, PlayerList
+from UserPreferencePredictor.TrainDataMaker.DataWriter.data_writer import DataWriter, DataWriterException, PlayerList
 from threading import Thread
 from pathlib import Path
 import typing
@@ -13,31 +11,6 @@ SIZE_TUPLE = typing.Tuple[int, int]
 
 class TFRecordsWriterException(DataWriterException):
     pass
-
-
-class Writer:
-    def __init__(self, save_file_path: str):
-        self.writer = tf.io.TFRecordWriter(save_file_path)
-
-    def write(self, left_array: np.array, right_array: np.array, label: int):
-        features = \
-            tf.train.Features(
-                feature={
-                    'label':
-                    tf.train.Feature(
-                        int64_list=tf.train.Int64List(value=[label])),
-                    'left_image':
-                    tf.train.Feature(bytes_list=tf.train.BytesList(
-                        value=[left_array.tobytes()])),
-                    'right_image':
-                    tf.train.Feature(bytes_list=tf.train.BytesList(
-                        value=[right_array.tobytes()]))
-                }
-            )
-
-        example = tf.train.Example(features=features)
-        record = example.SerializeToString()
-        self.writer.write(record)
 
 
 class WriteThread(Thread):
@@ -67,7 +40,6 @@ class WriteThread(Thread):
                 self.scored_player_list[i]['player'].resize(
                     self.resized_image_size)
 
-        progress = tqdm(total=data_length, desc='write tfrecords')
         for left_index in range(0, scored_player_length-1):
             for right_index in range(left_index+1, scored_player_length):
                 left_scored_player = self.scored_player_list[left_index]
@@ -82,7 +54,6 @@ class WriteThread(Thread):
                 try:
                     label = self._make_label(left_score, right_score)
                     writer.write(left_array, right_array, label)
-                    progress.update()
                 except ValueError:
                     pass
 
