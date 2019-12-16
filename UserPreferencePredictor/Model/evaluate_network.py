@@ -30,7 +30,7 @@ def _build_vgg16(input_shape: ShapeTuple):
 
 
 def build_evaluate_network(input_shape: ShapeTuple,
-                           *, use_vgg16: bool = True) -> tf.keras.Mdel:
+                           *, use_vgg16: bool = True) -> tf.keras.Model:
     convolution_layer = _build_vgg16(
         input_shape) if use_vgg16 else _build_my_cnn(input_shape)
 
