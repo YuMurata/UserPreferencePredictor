@@ -11,7 +11,7 @@ class Player(metaclass=ABCMeta):
     def decode(self):
         pass
 
-    def score_up(self):
+    def score_up(self) -> typing.NoReturn:
         self.score *= 2
 
     def to_dict(self) -> dict:

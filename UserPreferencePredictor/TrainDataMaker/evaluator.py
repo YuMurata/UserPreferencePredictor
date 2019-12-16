@@ -1,11 +1,8 @@
-import typing
-from .player import Player
-
-ParamDiffFunc = typing.Callable[[typing.Any, typing.Any], float]
+from .type_hint import PlayerList, ParamDiffFunc
 
 
 class Evaluator:
-    def __init__(self, scored_player_list: typing.List[Player],
+    def __init__(self, scored_player_list: PlayerList,
                  param_diff_func: ParamDiffFunc):
         self.scored_player_list = scored_player_list
         self.param_diff_func = param_diff_func

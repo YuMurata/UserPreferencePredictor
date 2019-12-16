@@ -1,14 +1,15 @@
 import tensorflow as tf
 import numpy as np
 import cv2
+from .type_hint import SizeTuple
 
 
 class GradCam:
-    def __init__(self, model: tf.keras.Model, input_image_size: tuple):
+    def __init__(self, model: tf.keras.Model, input_image_size: SizeTuple):
         self.model = model
         self.input_image_size = input_image_size
 
-    def get_cam(self, image_array: np.array, layer_name: str):
+    def get_cam(self, image_array: np.array, layer_name: str) -> np.array:
         grad_model = \
             tf.keras.Model(inputs=[self.model.inputs],
                            outputs=[self.model.get_layer(layer_name).output,

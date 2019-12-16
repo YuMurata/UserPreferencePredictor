@@ -4,7 +4,10 @@ import numpy as np
 from PIL.Image import Image
 from .grad_cam import GradCam
 from .evaluate_network import build_evaluate_network
+from .type_hint import ShapeTuple
 import typing
+
+ImageList = typing.List[Image]
 
 
 class RankNet:
@@ -12,12 +15,12 @@ class RankNet:
     TRAINABLE_MODEL_FILE_NAME = 'trainable_model.h5'
 
     class ImageInfo:
-        def __init__(self, image_shape: tuple):
+        def __init__(self, image_shape: ShapeTuple):
             self.shape = image_shape
             self.width, self.height, self.channel = image_shape
             self.size = (self.width, self.height)
 
-    def __init__(self, image_shape: tuple, *, use_vgg16: bool = True):
+    def __init__(self, image_shape: ShapeTuple, *, use_vgg16: bool = True):
         self.image_info = RankNet.ImageInfo(image_shape)
 
         with tf.name_scope(RankNet.SCOPE):
@@ -47,8 +50,10 @@ class RankNet:
                     from_logits=True)
             self.trainable_model.compile(optimizer='adam', loss=loss)
 
-    def train(self, dataset: tf.data.Dataset, *, log_dir_path: str,
-              valid_dataset: tf.data.Dataset, epochs=10, steps_per_epoch=30):
+    def train(self, dataset: tf.data.Dataset, *,
+              log_dir_path: str,
+              valid_dataset: tf.data.Dataset, epochs: int = 10,
+              steps_per_epoch: int = 30):
         callbacks = tf.keras.callbacks
 
         cb = []
@@ -93,7 +98,7 @@ class RankNet:
         resized_image = image.resize(self.image_info.size)
         return np.asarray(resized_image).astype(np.float32)/255
 
-    def predict(self, data_list: typing.List[Image]):
+    def predict(self, data_list: ImageList):
         image_array_list = np.array([self._image_to_array(data)
                                      for data in data_list])
 

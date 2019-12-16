@@ -1,6 +1,7 @@
 import tensorflow as tf
 from pathlib import Path
 from .exception import ModelException
+from .type_hint import ShapeTuple
 
 SCOPE = 'ranknet_dataset'
 
@@ -11,7 +12,8 @@ class DatasetException(ModelException):
 
 def make_dataset(dataset_file_path: str,
                  batch_size: int,
-                 name: str, image_shape: tuple) -> tf.data.TFRecordDataset:
+                 name: str,
+                 image_shape: ShapeTuple) -> tf.data.TFRecordDataset:
     dataset_file_path = Path(dataset_file_path)
     if not dataset_file_path.exists():
         raise DatasetException(f'{str(dataset_file_path)} is not found')

@@ -1,7 +1,8 @@
 import tensorflow as tf
+from .type_hint import ShapeTuple
 
 
-def _build_my_cnn(input_shape: tuple):
+def _build_my_cnn(input_shape: ShapeTuple):
     layers = tf.keras.layers
 
     model = tf.keras.Sequential()
@@ -18,7 +19,7 @@ def _build_my_cnn(input_shape: tuple):
     return model
 
 
-def _build_vgg16(input_shape: tuple):
+def _build_vgg16(input_shape: ShapeTuple):
     vgg16 = tf.keras.applications.VGG16(
         weights='imagenet', include_top=False, input_shape=input_shape)
 
@@ -28,8 +29,8 @@ def _build_vgg16(input_shape: tuple):
     return vgg16
 
 
-def build_evaluate_network(input_shape: tuple,
-                           *, use_vgg16: bool = True) -> tf.keras.Sequential:
+def build_evaluate_network(input_shape: ShapeTuple,
+                           *, use_vgg16: bool = True) -> tf.keras.Mdel:
     convolution_layer = _build_vgg16(
         input_shape) if use_vgg16 else _build_my_cnn(input_shape)
 
