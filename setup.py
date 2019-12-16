@@ -13,6 +13,6 @@ setup(
               'UserPreferencePredictor.Model',
               'UserPreferencePredictor.PreferenceOptimizer',
               'UserPreferencePredictor.TrainDataMaker',
-
+              'UserPreferencePredictor.TrainDataMaker.DataWriter',
               ],
 )
