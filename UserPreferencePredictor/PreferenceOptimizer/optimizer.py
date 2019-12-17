@@ -6,17 +6,21 @@ from UserPreferencePredictor.Model import RankNet
 import random
 from statistics import mean, stdev
 from .image_generator import ImageGenerator
+from .bit_decorder import BitDecoder
 
 
 class Optimizer:
     def __init__(self, model: RankNet,
-                 image_generator: ImageGenerator):
+                 image_generator: ImageGenerator,
+                 bit_decoder: BitDecoder):
         self.image_generator = image_generator
+        self.bit_decoder = bit_decoder
         self.model = model
         self.toolbox = self._init_deap()
 
     def _evaluate(self, individual):
-        image = self.image_generator.generate(individual)
+        param = self.bit_decoder.decode(individual)
+        image = self.image_generator.generate(param)
 
         predict_evaluate = self.model.predict([image]).tolist()[0][0]
 
@@ -64,6 +68,6 @@ class Optimizer:
             pop, self.toolbox, cxpb=0.5, mutpb=0.2,
             ngen=ngen, stats=stats, halloffame=hof)
 
-        param_list = [self.bit_decoder.decode_to_param(
-            ind) for ind in tools.selBest(pop, param_list_num)]
+        param_list = [self.image_generator.bit_decoder.decode(ind)
+                      for ind in tools.selBest(pop, param_list_num)]
         return param_list, logbook
