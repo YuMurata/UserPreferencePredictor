@@ -20,7 +20,7 @@ class RankNet:
             self.width, self.height, self.channel = image_shape
             self.size = (self.width, self.height)
 
-    def __init__(self, image_shape: ShapeTuple, *, use_vgg16: bool = True):
+    def __init__(self, image_shape: ShapeTuple, *, use_vgg16: bool = False):
         self.image_info = RankNet.ImageInfo(image_shape)
 
         with tf.name_scope(RankNet.SCOPE):
