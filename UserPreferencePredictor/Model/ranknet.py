@@ -1,27 +1,17 @@
 import tensorflow as tf
 from pathlib import Path
 import numpy as np
-from PIL.Image import Image
 from .grad_cam import GradCam
 from .evaluate_network import build_evaluate_network
-from .type_hint import ShapeTuple
-import typing
-
-ImageList = typing.List[Image]
+from .predict_model import PredictModel, ImageList, ShapeTuple
 
 
-class RankNet:
+class RankNet(PredictModel):
     SCOPE = 'predict_model'
     TRAINABLE_MODEL_FILE_NAME = 'trainable_model.h5'
 
-    class ImageInfo:
-        def __init__(self, image_shape: ShapeTuple):
-            self.shape = image_shape
-            self.width, self.height, self.channel = image_shape
-            self.size = (self.width, self.height)
-
     def __init__(self, image_shape: ShapeTuple, *, use_vgg16: bool = False):
-        self.image_info = RankNet.ImageInfo(image_shape)
+        super().__init__(image_shape)
 
         with tf.name_scope(RankNet.SCOPE):
             evaluate_network = build_evaluate_network(
@@ -94,11 +84,7 @@ class RankNet:
                                   str(save_dir_path/'trainable_model.png'),
                                   show_shapes=True)
 
-    def _image_to_array(self, image: Image):
-        resized_image = image.resize(self.image_info.size)
-        return np.asarray(resized_image).astype(np.float32)/255
-
-    def predict(self, data_list: ImageList):
+    def predict(self, data_list: ImageList) -> np.array:
         image_array_list = np.array([self._image_to_array(data)
                                      for data in data_list])
 

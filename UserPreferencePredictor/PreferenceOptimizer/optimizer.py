@@ -1,7 +1,7 @@
 from deap import base, creator, tools, algorithms
 from deap.tools import Logbook
 
-from UserPreferencePredictor.Model import RankNet
+from UserPreferencePredictor.Model import PredictModel
 
 import random
 from statistics import mean, stdev
@@ -10,7 +10,7 @@ from .bit_decorder import BitDecoder
 
 
 class Optimizer:
-    def __init__(self, model: RankNet,
+    def __init__(self, model: PredictModel,
                  image_generator: ImageGenerator,
                  bit_decoder: BitDecoder):
         self.image_generator = image_generator
@@ -68,6 +68,6 @@ class Optimizer:
             pop, self.toolbox, cxpb=0.5, mutpb=0.2,
             ngen=ngen, stats=stats, halloffame=hof)
 
-        param_list = [self.image_generator.bit_decoder.decode(ind)
+        param_list = [self.bit_decoder.decode(ind)
                       for ind in tools.selBest(pop, param_list_num)]
         return param_list, logbook
