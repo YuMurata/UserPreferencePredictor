@@ -1,0 +1,3 @@
+[submodule "UserPreferencePredictor/TrainDataMaker/Tournament"]
+	path = UserPreferencePredictor/TrainDataMaker/Tournament
+	url = https://github.com/YuMurata/Tournament.git
