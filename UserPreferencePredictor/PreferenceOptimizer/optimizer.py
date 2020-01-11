@@ -9,6 +9,10 @@ from .image_generator import ImageGenerator
 from .bit_decorder import BitDecoder
 
 
+creator.create("FitnessMax", base.Fitness, weights=(1.0,))
+creator.create("Individual", list, fitness=creator.FitnessMax)
+
+
 class Optimizer:
     def __init__(self, model: PredictModel,
                  image_generator: ImageGenerator,
@@ -30,9 +34,6 @@ class Optimizer:
         return predict_evaluate*random.gauss(mu, sigma),
 
     def _init_deap(self):
-        creator.create("FitnessMax", base.Fitness, weights=(1.0,))
-        creator.create("Individual", list, fitness=creator.FitnessMax)
-
         toolbox = base.Toolbox()
 
         toolbox.register("attr_bool", random.randint, 0, 1)
